@@ -1,0 +1,6 @@
+{
+    "editor.fontWeight": "normal",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "html.format.contentUnformatted": "",
+    "files.autoSave": "onFocusChange"
+}

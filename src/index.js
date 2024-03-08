@@ -1,13 +1,12 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import FirebaseContext from './context/firebase';
-import { FieldValue, firebase } from './lib/fb';
-
+import {auth, db, fb} from './lib/fb';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <FirebaseContext.Provider value={{FieldValue,firebase}}>
+    <FirebaseContext.Provider value={{fb, db, auth}}>
         <App />
-    </FirebaseContext.Provider>
+    </FirebaseContext.Provider>,
 );
 
 //client side rendered app:react

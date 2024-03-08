@@ -12,7 +12,9 @@
       true,
       {
         "limit": 140,
-        "ignore-pattern": "^import |^export {(.*?)}"
+        "ignore-pattern": "^import |^export {(.*?)}^import {BrowserRouter as Router,Route,Switch} from 'react-router-dom'$|^export {BrowserRouter as Router,Route,Switch} from 'react-router-dom'$"
+        
+
       }
     ]
   }

@@ -1,38 +1,66 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/no-unescaped-entities */
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import {
+    createUserWithEmailAndPassword,
+    getAuth,
+    updateProfile,
+} from 'firebase/auth';
+import {addDoc, collection, getFirestore} from 'firebase/firestore';
 import {useContext, useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import * as ROUTES from '../constants/routes';
 import FirebaseContext from '../context/firebase';
-export default function Login() {
+export default function Signup() {
     const navigate = useNavigate();
     const {firebase} = useContext(FirebaseContext);
+    const [userName, setUserName] = useState('');
+    const [fullName, setFullName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
     const [password, setPassword] = useState('');
 
     const [error, setError] = useState('');
     const isInvalid = password === '' || emailAddress === '';
 
-    const handleLoginSubmit = async (event) => {
+    const handleSignUp = async (event) => {
         event.preventDefault();
         const auth = getAuth(firebase);
+        const firestore = getFirestore(firebase);
 
         try {
-            const userCredential = await signInWithEmailAndPassword(
+            // Create user account
+            const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 emailAddress,
                 password,
             );
 
-            console.log('Login successful', userCredential.user);
+            // Update user profile with username
+            await updateProfile(auth.currentUser, {
+                displayName: userName.toLowerCase(),
+            });
+
+            // Add user data to Firestore
+            await addDoc(collection(firestore, 'users'), {
+                userId: userCredential.user.uid,
+                username: userName.toLowerCase(),
+                fullName,
+                emailAddress: emailAddress.toLowerCase(),
+                following: [],
+                followers: [],
+                dateCreated: Date.now(),
+            });
+
+            console.log('Sign-up successful', userCredential.user);
             navigate(ROUTES.DASHBOARD);
         } catch (error) {
-            console.error('Login error', error.message);
             setError(error.message);
         }
     };
     useEffect(() => {
-        document.title = 'Login - Instagram';
+        document.title = 'Sign up - Instagram';
     }, []);
     return (
         <div className='container flex mx-auto max-w-screen-md items-center h-screen'>
@@ -54,7 +82,26 @@ export default function Login() {
                     {error && (
                         <p className='mb-4 text-xs text-red-primary'>{error}</p>
                     )}
-                    <form onSubmit={handleLoginSubmit} method='POST'>
+                    <form
+                        onSubmit={(event) => handleSignUp(event)}
+                        method='POST'
+                    >
+                        <input
+                            aria-label='Enter your username'
+                            type='text'
+                            placeholder='Username'
+                            className='text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border border-gray-primary rounded mb-2'
+                            onChange={({target}) => setUserName(target.value)}
+                            value={userName}
+                        />
+                        <input
+                            aria-label='Enter your full name'
+                            type='text'
+                            placeholder='Full name'
+                            className='text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border border-gray-primary rounded mb-2'
+                            onChange={({target}) => setFullName(target.value)}
+                            value={fullName}
+                        />
                         <input
                             aria-label='Enter your email address'
                             type='text'
@@ -78,18 +125,18 @@ export default function Login() {
                             type='submit'
                             className={`bg-blue-medium text-white w-full rounded h-8 font-bold ${isInvalid ? ' opacity-50' : ''}`}
                         >
-                            Log in
+                            Sign up
                         </button>
                     </form>
                 </div>
                 <div className='flex justify-center items-center flex-col w-full bg-white p-4 border border-gray-primary'>
                     <p className='text-sm'>
-                        Don't have an account?{` `}
+                        Have an account?{` `}
                         <Link
-                            to={ROUTES.SIGN_UP}
+                            to={ROUTES.LOGIN}
                             className='font-bold text-blue-medium'
                         >
-                            Sign up
+                            Log in
                         </Link>
                     </p>
                 </div>

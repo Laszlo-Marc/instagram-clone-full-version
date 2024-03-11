@@ -1,6 +1,7 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import {initializeApp} from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import {getFirestore} from 'firebase/firestore';
 //import {seedDatabase} from '../seed';
 const config = {
     apiKey: 'AIzaSyAMoS1EgZHF5jw-IRsfO7Z-MzHA2pXzCtI',
@@ -10,10 +11,8 @@ const config = {
     messagingSenderId: '709115381950',
     appId: '1:709115381950:web:5d8cce399f6fe44c8636ef',
 };
-const fb = firebase.initializeApp(config);
-const db = fb.firestore();
-const auth = fb.auth();
 
-//seedDatabase(fb);
-
-export {auth, db, fb};
+const firebase = initializeApp(config);
+const {FieldValue} = getFirestore(firebase);
+//seedDatabase(firebase);
+export {FieldValue, firebase};

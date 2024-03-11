@@ -18,7 +18,7 @@
   "scripts": {
     "build:css": "postcss src/styles/tailwind.css -o src/styles/app.css",
     "watch:css": "postcss src/styles/tailwind.css -o src/styles/app.css --watch",
-    "react-scripts:start":"timeout /t 5 /nobreak && react-scripts start",
+    "react-scripts:start": "timeout /t 5 /nobreak && react-scripts start",
     "start": "run-p watch:css react-scripts:start",
     "build": "run-s build:css react-scripts:build",
     "test": "react-scripts test",
